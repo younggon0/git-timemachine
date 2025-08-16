@@ -7,3 +7,4 @@ faiss-cpu
 plotly
 pandas
 sentence-transformers
+python-dotenv
