@@ -14,11 +14,6 @@ from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
 # Try to load API keys from environment or Streamlit secrets
 try:
     api_key = os.getenv('ANTHROPIC_API_KEY') or st.secrets.get('ANTHROPIC_API_KEY')
@@ -53,7 +48,7 @@ with st.sidebar:
     
     # Show API key status
     if api_key and openai_api_key:
-        st.success("✅ API keys loaded from .env")
+        st.success("✅ API keys loaded")
     else:
         missing = []
         if not api_key:
@@ -68,7 +63,7 @@ with st.sidebar:
         if not repo_url:
             st.error("Please enter a repository URL")
         elif not api_key or not openai_api_key:
-            st.error("Please set ANTHROPIC_API_KEY and OPENAI_API_KEY in .env file")
+            st.error("Please set ANTHROPIC_API_KEY and OPENAI_API_KEY environment variables")
         else:
             with st.spinner("Cloning and analyzing repository..."):
                 # Clone repository
