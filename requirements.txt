@@ -2,9 +2,9 @@ streamlit
 gitpython
 langchain
 langchain-anthropic
+langchain-openai
 langchain-community
 faiss-cpu
 plotly
 pandas
-sentence-transformers
 python-dotenv

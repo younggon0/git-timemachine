@@ -10,8 +10,8 @@ dependencies = [
     "langchain>=0.3.27",
     "langchain-anthropic>=0.3.18",
     "langchain-community>=0.3.27",
+    "langchain-openai>=0.3.30",
     "pandas>=2.3.1",
     "plotly>=6.3.0",
-    "sentence-transformers>=5.1.0",
     "streamlit>=1.48.1",
 ]

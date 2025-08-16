@@ -9,7 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from langchain_anthropic import ChatAnthropic
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 from langchain.chains import RetrievalQA
@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 api_key = os.getenv('ANTHROPIC_API_KEY')
+openai_api_key = os.getenv('OPENAI_API_KEY')
 
 st.set_page_config(
     page_title="Codebase Time Machine",
@@ -44,18 +45,23 @@ with st.sidebar:
     repo_url = st.text_input("Repository URL", placeholder="https://github.com/user/repo.git")
     
     # Show API key status
-    if api_key:
-        st.success("✅ API key loaded from .env")
+    if api_key and openai_api_key:
+        st.success("✅ API keys loaded from .env")
     else:
-        st.warning("⚠️ No API key found. Please set ANTHROPIC_API_KEY in .env file")
+        missing = []
+        if not api_key:
+            missing.append("ANTHROPIC_API_KEY")
+        if not openai_api_key:
+            missing.append("OPENAI_API_KEY") 
+        st.warning(f"⚠️ Missing: {', '.join(missing)}")
     
     max_commits = st.slider("Max commits to analyze", 10, 500, 100)
     
     if st.button("🔄 Analyze Repository", type="primary"):
         if not repo_url:
             st.error("Please enter a repository URL")
-        elif not api_key:
-            st.error("Please set ANTHROPIC_API_KEY in .env file")
+        elif not api_key or not openai_api_key:
+            st.error("Please set ANTHROPIC_API_KEY and OPENAI_API_KEY in .env file")
         else:
             with st.spinner("Cloning and analyzing repository..."):
                 # Clone repository
@@ -118,8 +124,8 @@ with st.sidebar:
                     
                     # Create vector store
                     with st.spinner("Building semantic index..."):
-                        embeddings = HuggingFaceEmbeddings(
-                            model_name="sentence-transformers/all-MiniLM-L6-v2"
+                        embeddings = OpenAIEmbeddings(
+                            api_key=openai_api_key
                         )
                         st.session_state.vector_store = FAISS.from_documents(
                             documents, embeddings
