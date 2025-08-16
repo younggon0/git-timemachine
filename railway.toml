@@ -2,8 +2,11 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "streamlit run app.py --server.port $PORT --server.address 0.0.0.0"
-healthcheckPath = "/"
+startCommand = "streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false"
+healthcheckPath = "/_stcore/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
+
+[environments.production]
+variables = { STREAMLIT_SERVER_HEADLESS = "true", STREAMLIT_SERVER_ENABLE_CORS = "false", STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION = "false" }

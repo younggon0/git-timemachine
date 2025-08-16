@@ -26,11 +26,44 @@ except Exception as e:
 st.set_page_config(
     page_title="Codebase Time Machine",
     page_icon="⏰",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/your-username/git-timemachine',
+        'Report a bug': 'https://github.com/your-username/git-timemachine/issues',
+        'About': "# Git Time Machine\nAnalyze any codebase through time with AI-powered semantic understanding."
+    }
 )
 
 st.title("⏰ Codebase Time Machine")
 st.markdown("Navigate any codebase through time with semantic understanding")
+
+# Add a demo section for public users
+with st.expander("📖 How to Use This App", expanded=False):
+    st.markdown("""
+    1. **Enter a Repository URL**: Paste any public GitHub repository URL
+    2. **Set API Keys**: Contact admin or use your own Anthropic & OpenAI API keys
+    3. **Analyze**: Click "Analyze Repository" to process the git history
+    4. **Ask Questions**: Use natural language to explore code evolution
+    
+    **Example Questions**:
+    - "What major refactoring happened recently?"
+    - "How did the authentication system evolve?"
+    - "What patterns were introduced for error handling?"
+    """)
+
+# Add demo repository suggestions
+with st.expander("🚀 Try These Demo Repositories", expanded=False):
+    demo_repos = [
+        "https://github.com/microsoft/vscode",
+        "https://github.com/facebook/react", 
+        "https://github.com/tensorflow/tensorflow",
+        "https://github.com/rails/rails"
+    ]
+    for repo in demo_repos:
+        if st.button(f"Load {repo.split('/')[-1]}", key=repo):
+            st.session_state.demo_repo = repo
+            st.rerun()
 
 # Initialize session state
 if 'repo' not in st.session_state:
@@ -44,7 +77,11 @@ if 'commits_df' not in st.session_state:
 with st.sidebar:
     st.header("Configuration")
     
-    repo_url = st.text_input("Repository URL", placeholder="https://github.com/user/repo.git")
+    # Auto-fill from demo selection
+    default_url = st.session_state.get('demo_repo', '')
+    repo_url = st.text_input("Repository URL", 
+                            value=default_url,
+                            placeholder="https://github.com/user/repo.git")
     
     # Show API key status
     if api_key and openai_api_key:
