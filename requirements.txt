@@ -1,0 +1,9 @@
+streamlit
+gitpython
+langchain
+langchain-anthropic
+langchain-community
+faiss-cpu
+plotly
+pandas
+sentence-transformers
