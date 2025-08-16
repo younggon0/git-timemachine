@@ -18,8 +18,15 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-api_key = os.getenv('ANTHROPIC_API_KEY')
-openai_api_key = os.getenv('OPENAI_API_KEY')
+
+# Try to load API keys from environment or Streamlit secrets
+try:
+    api_key = os.getenv('ANTHROPIC_API_KEY') or st.secrets.get('ANTHROPIC_API_KEY')
+    openai_api_key = os.getenv('OPENAI_API_KEY') or st.secrets.get('OPENAI_API_KEY')
+except Exception as e:
+    st.error(f"Error loading secrets: {e}")
+    api_key = None
+    openai_api_key = None
 
 st.set_page_config(
     page_title="Codebase Time Machine",
